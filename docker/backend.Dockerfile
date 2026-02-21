@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd zip pdo pdo_mysql
-
+RUN a2dismod mpm_event mpm_worker || true && a2enmod mpm_prefork rewrite
 # 2. Configurar Apache para Laravel (DocumentRoot a /public)
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
