@@ -25,7 +25,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # 4. Copiar archivos y dar permisos
-COPY ./backend/laravel .
+#COPY ./backend/laravel . #esto para local
+COPY backend/laravel/ /var/www/html/
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 EXPOSE 80
