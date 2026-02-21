@@ -1,0 +1,31 @@
+services:
+  # Backend Laravel
+  api:
+    build:
+      context: .
+      dockerfile: ./docker/backend.Dockerfile
+    ports:
+      - "8000:80"
+    volumes:
+      - ./backend/laravel:/var/www/html
+    networks:
+      - app-network
+
+  # Frontend Nuxt
+  client:
+    build:
+      context: .
+      dockerfile: ./docker/frontend.Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/src
+      - /src/node_modules
+    environment:
+      - NUXT_PUBLIC_API_BASE=http://localhost:8000/api
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
