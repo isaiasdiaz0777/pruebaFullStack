@@ -1,31 +1,27 @@
-// nuxt.config.ts
 export default defineNuxtConfig({
-
-  app: {
-    head: {
-      htmlAttrs: { lang: 'es' },
-      title: 'Sistema de Facturación Profesional',
-      meta: [
-        { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Generador de facturas rápido y optimizado.' }
-      ],
-    }
-  },
-
-
-  modules: [
-    '@nuxt/ui',
-    '@pinia/nuxt',
-    '@nuxt/eslint'
-  ],
-
-  
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api'
     }
   },
+
+  app: {
+    head: {
+      htmlAttrs: { lang: 'es' },
+      title: 'Sistema de Facturación - Prueba',
+      meta: [
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+      ],
+
+    }
+  },
+
+  modules: [
+    '@nuxt/eslint',
+    '@nuxt/ui',
+    '@pinia/nuxt'
+  ],
+
 
   fonts: {
     families: [
@@ -33,22 +29,14 @@ export default defineNuxtConfig({
     ]
   },
 
-
-  ui: {
-    icons: ['lucide'],
- 
-    safelistColors: ['primary', 'red', 'orange', 'green', 'blue', 'pink', 'purple']
-  },
-
-
   nitro: {
     compressPublicAssets: {
       gzip: true,
       brotli: true
     },
-    routeRules: {
  
-      '/_nuxt/**': { headers: { 'Cache-Control': 'public, max-age=31536000, immutable' } }
+    routeRules: {
+      '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } }
     }
   },
 
@@ -57,11 +45,10 @@ export default defineNuxtConfig({
       cssCodeSplit: true,
       rollupOptions: {
         output: {
-          manualChunks(id) {
+          manualChunks: (id) => {
             if (id.includes('node_modules')) {
-             
               if (id.includes('vue') || id.includes('pinia')) return 'vendor-core';
-              if (id.includes('@headlessui') || id.includes('lucide')) return 'vendor-ui';
+              if (id.includes('lucide') || id.includes('headlessui')) return 'vendor-ui';
               return 'vendor-others';
             }
           }
@@ -72,10 +59,11 @@ export default defineNuxtConfig({
 
 
   tailwindcss: {
-    viewer: false 
+    viewer: false,
   },
 
   devtools: { enabled: false },
+  css: ['~/assets/css/main.css'],
 
   routeRules: {
     '/': { prerender: true }
