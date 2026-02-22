@@ -1,30 +1,48 @@
+// https://nuxt.com/docs/api/configuration/nuxt-config
+
 export default defineNuxtConfig({
-  modules: ['@nuxt/ui', '@pinia/nuxt'],
-
-  // Configuración de fuentes nativa para que no bloqueen el render
-  fonts: {
-    families: [
-      { name: 'Inter', provider: 'google', weights: [400, 700], display: 'swap' }
-    ]
-  },
-
-  // Evita que el JS de Tailwind sea pesado
-  tailwindcss: {
-    viewer: false
-  },
-
-  // Nitro para que Railway vuele
-  nitro: {
-    compressPublicAssets: true
-  },
-
-  app: {
-    head: {
-      htmlAttrs: { lang: 'es' },
-      title: 'Sistema de Facturación'
+  runtimeConfig: {
+    public: {
+      // En Railway configuraremos NUXT_PUBLIC_API_BASE
+      // Si no existe, usará localhost por defecto
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api'
     }
   },
+  app: {
+  head: {
+    htmlAttrs: { lang: 'es' },
+    title: 'Sistema de Facturación - Prueba' // Esto corrige el error de "Document doesn't have a <title>"
+  }
+  },
+  modules: [
+    '@nuxt/eslint',
+    '@nuxt/ui',
+    //'@nuxtjs/tailwindcss',
+    '@pinia/nuxt'
+  ],
+  // SOLUCIÓN AL ERROR: Forzamos a que use el nuevo motor de Tailwind
+  tailwindcss: {
+    exposeConfig: true,
+    viewer: true,
+  },
+  devtools: {
+    enabled: true
+  },
 
-  devtools: { enabled: false },
-  compatibilityDate: '2025-01-15'
+  css: ['~/assets/css/main.css'],
+
+  routeRules: {
+    '/': { prerender: true }
+  },
+
+  compatibilityDate: '2025-01-15',
+
+  eslint: {
+    config: {
+      stylistic: {
+        commaDangle: 'never',
+        braceStyle: '1tbs'
+      }
+    }
+  }
 })
