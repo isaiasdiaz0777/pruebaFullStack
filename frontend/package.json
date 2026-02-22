@@ -20,6 +20,7 @@
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
+    "@vite-pwa/nuxt": "^0.10.6",
     "@tailwindcss/postcss": "latest",
     "@nuxt/eslint": "^1.15.1",
     "eslint": "^10.0.0",

@@ -18,8 +18,38 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui',
     //'@nuxtjs/tailwindcss',
-    '@pinia/nuxt'
+    '@pinia/nuxt',
+    '@vite-pwa/nuxt'
   ],
+  pwa: {
+    manifest: {
+      name: 'Sistema de Facturación Proactiva',
+      short_name: 'FacturaPro',
+      description: 'Generador de facturas profesional optimizado',
+      theme_color: '#1f1f1f',
+      background_color: '#ffffff',
+      display: 'standalone',
+      icons: [
+        {
+          src: 'pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png'
+        },
+        {
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png'
+        }
+      ]
+    },
+    workbox: {
+      navigateFallback: '/'
+    },
+    devOptions: {
+      enabled: true, 
+      type: 'module'
+    }
+  },
   // SOLUCIÓN AL ERROR: Forzamos a que use el nuevo motor de Tailwind
   tailwindcss: {
     exposeConfig: true,
