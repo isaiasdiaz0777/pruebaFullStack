@@ -1,8 +1,8 @@
 # ETAPA 1: Construcción (Builder)
 FROM node:22-alpine AS builder
 
-# Instalamos compatibilidad para librerías necesarias en Alpine
-RUN apk add --no-cache libc6-compat
+# Instalamos compatibilidad para librerías necesarias y herramientas de compresión
+RUN apk add --no-cache libc6-compat gzip brotli
 
 # Aumentamos el límite de memoria para evitar el error "heap out of memory"
 ENV NODE_OPTIONS="--max-old-space-size=2048"
@@ -21,7 +21,11 @@ COPY ./frontend .
 # 4. Generamos el build de producción (.output)
 RUN npm run build
 
-# ---
+# --- COMPRESIÓN DE ASSETS ---
+# Comprimimos archivos JS y CSS para que el navegador los descargue mucho más rápido
+RUN find .output/public -type f -name '*.js' -exec gzip -9k {} + -exec brotli -9k {} +
+RUN find .output/public -type f -name '*.css' -exec gzip -9k {} + -exec brotli -9k {} +
+# ------------------------------
 
 # ETAPA 2: Ejecución (Runner)
 FROM node:22-alpine AS runner
