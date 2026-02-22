@@ -8,50 +8,40 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'es' },
-      title: 'Sistema de Facturación - Prueba',
+      title: 'Sistema de Facturación Profesional',
       meta: [
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' }
-      ],
-      // ELIMINAMOS los preconnects de Google Fonts porque el reporte dice que no se usan
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        // ESTO CORRIGE EL 90 EN SEO PARA LLEVARLO A 100:
+        { name: 'description', content: 'Crea, gestiona y descarga facturas profesionales de forma rápida y segura con nuestro sistema optimizado.' }
+      ]
     }
   },
 
+  // Invertimos el orden para asegurar que Pinia cargue antes que la UI
   modules: [
-    '@nuxt/eslint',
+    '@pinia/nuxt',
     '@nuxt/ui',
-    '@pinia/nuxt'
+    '@nuxt/eslint'
   ],
 
-  // MEJORA: Configuración de fuentes nativa de Nuxt UI
-  // Esto evita que las fuentes bloqueen el LCP
-  fonts: {
-    families: [
-      { name: 'Inter', provider: 'google', weights: [400, 700], display: 'swap' }
-    ]
-  },
-
+  // Optimizamos el renderizado de componentes pesados
   nitro: {
-    compressPublicAssets: {
-      gzip: true,
-      brotli: true
-    },
-    // Cache agresiva para Railway
-    routeRules: {
-      '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } }
-    }
+    compressPublicAssets: true,
+    minify: true,
   },
 
   vite: {
     build: {
       cssCodeSplit: true,
+      // Reducimos el ruido visual en la consola que causa retardos
+      reportCompressedSize: false,
       rollupOptions: {
         output: {
           manualChunks: (id) => {
-            // Separamos librerías pesadas para reducir el bloqueo del hilo principal
             if (id.includes('node_modules')) {
-              if (id.includes('vue') || id.includes('pinia')) return 'vendor-core';
-              if (id.includes('lucide') || id.includes('headlessui')) return 'vendor-ui';
-              return 'vendor-others';
+              // Agrupamos el núcleo para evitar el error de inicialización ($u)
+              if (id.includes('vue') || id.includes('@vue') || id.includes('pinia')) return 'vendor-bundle';
+              return 'vendor-ui';
             }
           }
         }
@@ -59,17 +49,14 @@ export default defineNuxtConfig({
     }
   },
 
-  // Reducimos el peso de Tailwind
-  tailwindcss: {
-    viewer: false,
+  // Ajustes de UI para evitar el bloqueo del hilo principal
+  ui: {
+    global: true,
+    icons: ['lucide'] 
   },
 
   devtools: { enabled: false },
   css: ['~/assets/css/main.css'],
-
-  routeRules: {
-    '/': { prerender: true }
-  },
 
   compatibilityDate: '2025-01-15'
 })
