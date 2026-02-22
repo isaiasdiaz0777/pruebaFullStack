@@ -1,7 +1,7 @@
 <template>
   <UApp>
     <UContainer class="py-10 max-w-5xl relative">
-      
+
       <div class="fixed left-10 top-24 z-50 flex flex-col gap-3">
         <UTooltip text="Opciones de diseño" side="right">
           <UButton
@@ -168,7 +168,7 @@
                 class="w-full bg-gray-50 border rounded p-1 text-xs outline-none focus:ring-1 focus:ring-primary-500"
                 @change="handleTypeChange(index)"
               >
-                <option value="Producto">Producto</option>
+                <option value="Producto">Product</option>
                 <option value="Servicio">Servicio</option>
               </select>
             </div>
