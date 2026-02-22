@@ -1,5 +1,3 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
-
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
@@ -12,14 +10,9 @@ export default defineNuxtConfig({
       htmlAttrs: { lang: 'es' },
       title: 'Sistema de Facturación - Prueba',
       meta: [
-        { name: 'description', content: 'Generador de facturas profesional y rápido' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' }
       ],
-      link: [
-        
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' }
-      ]
+      // ELIMINAMOS los preconnects de Google Fonts porque el reporte dice que no se usan
     }
   },
 
@@ -29,29 +22,36 @@ export default defineNuxtConfig({
     '@pinia/nuxt'
   ],
 
- 
+  // MEJORA: Configuración de fuentes nativa de Nuxt UI
+  // Esto evita que las fuentes bloqueen el LCP
+  fonts: {
+    families: [
+      { name: 'Inter', provider: 'google', weights: [400, 700], display: 'swap' }
+    ]
+  },
+
   nitro: {
     compressPublicAssets: {
       gzip: true,
       brotli: true
     },
-    
-    prerender: {
-      crawlLinks: true,
-      routes: ['/']
+    // Cache agresiva para Railway
+    routeRules: {
+      '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } }
     }
   },
 
   vite: {
     build: {
-      cssCodeSplit: true, 
-      chunkSizeWarningLimit: 500,
+      cssCodeSplit: true,
       rollupOptions: {
         output: {
-          
           manualChunks: (id) => {
+            // Separamos librerías pesadas para reducir el bloqueo del hilo principal
             if (id.includes('node_modules')) {
-              return 'vendor'
+              if (id.includes('vue') || id.includes('pinia')) return 'vendor-core';
+              if (id.includes('lucide') || id.includes('headlessui')) return 'vendor-ui';
+              return 'vendor-others';
             }
           }
         }
@@ -59,36 +59,17 @@ export default defineNuxtConfig({
     }
   },
 
-  
-  ui: {
-   
-    icons: ['lucide']
-  },
-
+  // Reducimos el peso de Tailwind
   tailwindcss: {
-    exposeConfig: true,
-    viewer: false, 
+    viewer: false,
   },
 
-  
-  devtools: {
-    enabled: false 
-  },
-
+  devtools: { enabled: false },
   css: ['~/assets/css/main.css'],
 
   routeRules: {
     '/': { prerender: true }
   },
 
-  compatibilityDate: '2025-01-15',
-
-  eslint: {
-    config: {
-      stylistic: {
-        commaDangle: 'never',
-        braceStyle: '1tbs'
-      }
-    }
-  }
+  compatibilityDate: '2025-01-15'
 })
