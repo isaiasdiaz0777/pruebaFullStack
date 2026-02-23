@@ -21,7 +21,7 @@ export default defineNuxtConfig({
       ],
       link: [
         // Enlace explícito al manifiesto para asegurar detección en Lighthouse
-        { rel: 'manifest', href: '/manifest.webmanifest' }
+        { rel: 'manifest', href: '/manifest.webmanifest' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }
       ]
