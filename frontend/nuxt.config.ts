@@ -93,10 +93,6 @@ export default defineNuxtConfig({
     // Prerenderizado de la home para mejorar la velocidad inicial (Performance)
     '/': { prerender: true }
   },
- 
-  nitro: {
-    compressPublicAssets: true, // Esto activa Gzip/Brotli para tus assets, ¡adiós al error de compresión!
-  },
 
   // 7. Herramientas de Desarrollo y Calidad
   devtools: {
