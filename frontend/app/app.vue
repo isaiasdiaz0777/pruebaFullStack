@@ -161,7 +161,11 @@
               </div>
               
               <div class="col-span-2 px-2">
-                <select v-model="item.type" class="w-full bg-gray-50 border rounded p-1 text-xs outline-none focus:ring-1 focus:ring-primary-500" :aria-label="'Tipo de item ' + (index + 1)" @change="handleTypeChange(index)">
+                <select 
+                  v-model="item.type" 
+                  class="w-full bg-gray-50 border rounded p-1 text-xs outline-none focus:ring-1 focus:ring-primary-500 cursor-pointer" 
+                  :aria-label="'Tipo de item ' + (index + 1)"
+                >
                   <option value="Producto">Product</option>
                   <option value="Servicio">Servicio</option>
                 </select>
@@ -211,7 +215,7 @@
               <div class="flex justify-between text-2xl font-bold pt-2 border-t-2 border-gray-900">
                 <div class="flex flex-col">
                   <span>Total:</span>
-                  <span class="text-[10px] text-gray-400 uppercase font-sans tracking-widest">Modo: {{ invoice.items[0].type }}</span>
+                  <span class="text-[10px] text-gray-400 uppercase font-sans tracking-widest">Modo: {{ invoice.items[0]?.type }}</span>
                 </div>
                 <span :style="{ color: themeColor }" class="font-serif transition-colors duration-500">${{ total.toFixed(2) }}</span>
               </div>
@@ -230,6 +234,8 @@
 </template>
 
 <script setup>
+import { ref, reactive, computed, watch } from 'vue'
+
 const showMenu = ref(false)
 const themeColor = ref('#1F1F1F')
 const logo = ref(null)
@@ -251,7 +257,21 @@ const invoice = reactive({
   notes: ''
 })
 
-// VALIDACIONES
+// VALIDACIÓN DE TIPO DE ITEM EN TIEMPO REAL
+// Este watch observa cualquier cambio en el array de items
+watch(() => invoice.items, (newItems) => {
+  if (newItems.length > 0) {
+    const masterType = newItems[0].type
+    // Si algún item tiene un tipo diferente al primero, lo corregimos
+    newItems.forEach((item, index) => {
+      if (index > 0 && item.type !== masterType) {
+        item.type = masterType
+      }
+    })
+  }
+}, { deep: true })
+
+// VALIDACIONES DE ENTRADA
 const onlyNumbers = (e) => {
   const isControlKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Enter'].includes(e.key);
   if (!/^[0-9]$/.test(e.key) && !isControlKey) e.preventDefault();
@@ -276,19 +296,14 @@ const handleLogoUpload = (e) => {
 }
 
 // LÓGICA DE TABLA
-const handleTypeChange = (index) => {
-  if (index === 0) {
-    const masterType = invoice.items[0].type
-    invoice.items.forEach(item => item.type = masterType)
-  }
-}
-
 const addItem = () => {
+  // Al agregar, heredamos automáticamente el tipo del primer item
+  const currentType = invoice.items.length > 0 ? invoice.items[0].type : 'Producto'
   invoice.items.push({ 
     description: '', 
     quantity: 1, 
     price: 0, 
-    type: invoice.items[0].type 
+    type: currentType 
   })
 }
 
@@ -301,6 +316,8 @@ const total = computed(() => {
   const S = subtotal.value
   const T = invoice.taxPercent / 100
   const D = invoice.discountPercent / 100
+  
+  // Lógica de cálculo según tipo de factura
   return invoice.items[0]?.type === 'Servicio' 
     ? (S - (S * D)) * (1 + T) 
     : (S * (1 + T)) - (S * D)
@@ -325,5 +342,18 @@ body { background-color: #f8f7f5; font-family: 'Inter', sans-serif; }
 @media print {
   .print\:hidden, .fixed { display: none !important; }
   .shadow-2xl { box-shadow: none !important; }
+  body { background-color: white !important; }
+}
+
+/* Chrome, Safari, Edge, Opera - Ocultar flechas de input number */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
 </style>
