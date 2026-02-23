@@ -24,7 +24,6 @@
                   color="red" 
                   variant="soft" 
                   class="rounded-full" 
-                  aria-label="Resetear todos los campos de la factura"
                   @click="resetInvoice" 
                 />
               </UTooltip>
@@ -35,30 +34,27 @@
                   :style="{ backgroundColor: themeColor, color: 'white' }" 
                   variant="solid" 
                   class="rounded-full shadow-md" 
-                  aria-label="Cambiar color de tema"
                 />
                 <template #content>
                   <div class="p-3 bg-white border rounded-lg shadow-xl w-64">
-                    <p id="color-picker-label" class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">Seleccionar Color</p>
-                    <div class="grid grid-cols-6 gap-2 mb-3" role="group" aria-labelledby="color-picker-label">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase mb-2 tracking-widest">Seleccionar Color</p>
+                    <div class="grid grid-cols-6 gap-2 mb-3">
                       <button 
                         v-for="color in colors" 
                         :key="color"
                         type="button"
                         class="w-8 h-8 rounded-md border border-gray-100 hover:scale-110 transition-transform"
                         :style="{ backgroundColor: color }"
-                        :aria-label="'Cambiar color a ' + color"
                         @click="themeColor = color"
                       />
                     </div>
                     <div class="flex items-center gap-2 border-t pt-2">
-                      <span class="text-xs text-gray-500 font-mono" aria-hidden="true">#</span>
+                      <span class="text-xs text-gray-500 font-mono">#</span>
                       <input 
                         v-model="themeColor" 
                         type="text" 
                         class="text-xs font-mono uppercase w-full outline-none"
                         maxlength="7"
-                        aria-label="Código hexadecimal del color"
                       />
                     </div>
                   </div>
@@ -75,72 +71,51 @@
               <h1 class="text-5xl font-serif text-gray-800 mb-6 italic">Invoice</h1>
               
               <div class="max-w-xs space-y-1">
-                <UInput v-model="invoice.sender.name" placeholder="YOUR COMPANY*" variant="none" class="font-bold text-black text-sm mb-2 uppercase tracking-widest p-0 focus:ring-0 w-full" aria-label="Nombre de tu empresa" />
-                
+                <UInput v-model="invoice.sender.name" placeholder="YOUR COMPANY*" variant="none" class="font-bold text-black text-sm mb-2 uppercase tracking-widest p-0 focus:ring-0 w-full" />
                 <div class="flex gap-2">
-                  <UInput v-model="invoice.sender.firstName" placeholder="First Name*" variant="none" class="p-0 focus:ring-0" aria-label="Tu nombre" />
-                  <UInput v-model="invoice.sender.lastName" placeholder="Last Name*" variant="none" class="p-0 focus:ring-0" aria-label="Tu apellido" />
+                  <UInput v-model="invoice.sender.firstName" placeholder="First Name*" variant="none" class="p-0 focus:ring-0" />
+                  <UInput v-model="invoice.sender.lastName" placeholder="Last Name*" variant="none" class="p-0 focus:ring-0" />
                 </div>
-                <UInput v-model="invoice.sender.website" placeholder="Company Website*" variant="none" class="p-0 focus:ring-0" aria-label="Sitio web de la empresa" />
-                <UInput v-model="invoice.sender.address" placeholder="Company Address" variant="none" class="p-0 focus:ring-0" aria-label="Dirección de la empresa" />
-                <UInput v-model="invoice.sender.cityStateZip" placeholder="City, State ZIP" variant="none" class="p-0 focus:ring-0" aria-label="Ciudad, Estado y Código Postal" />
-                <UInput v-model="invoice.sender.country" placeholder="Country" variant="none" class="p-0 focus:ring-0" aria-label="País" />
-                
-                <UInput 
-                  v-model="invoice.sender.phone" 
-                  placeholder="Phone (10 digits)*" 
-                  variant="none" 
-                  class="p-0 focus:ring-0"
-                  maxlength="10"
-                  aria-label="Teléfono de contacto"
-                  @keydown="onlyNumbers"
-                  @paste="handlePasteNumbers"
-                />
-                
-                <div class="flex flex-col">
-                  <UInput v-model="invoice.sender.email" type="email" placeholder="Email Address*" variant="none" class="p-0 text-primary-600 focus:ring-0" aria-label="Correo electrónico" />
-                  <span v-if="invoice.sender.email && !invoice.sender.email.includes('@')" class="text-[10px] text-red-600 font-bold italic mt-0.5 ml-1">Error: Correo emisor sin '@'</span>
-                </div>
+                <UInput v-model="invoice.sender.website" placeholder="Company Website*" variant="none" class="p-0 focus:ring-0" />
+                <UInput v-model="invoice.sender.address" placeholder="Address" variant="none" class="p-0 focus:ring-0" />
+                <UInput v-model="invoice.sender.cityStateZip" placeholder="City, State ZIP" variant="none" class="p-0 focus:ring-0" />
+                <UInput v-model="invoice.sender.phone" placeholder="Phone*" variant="none" class="p-0 focus:ring-0" maxlength="10" @keydown="onlyNumbers" @paste="handlePasteNumbers" />
+                <UInput v-model="invoice.sender.email" type="email" placeholder="Email Address*" variant="none" class="p-0 text-primary-600 focus:ring-0" />
               </div>
             </div>
 
             <div class="relative w-64 h-40 border-2 border-dashed border-gray-300 rounded flex items-center justify-center bg-gray-50 cursor-pointer overflow-hidden group hover:border-primary-500 transition-colors">
-              <input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10" aria-label="Subir logo de la empresa" @change="handleLogoUpload" />
+              <input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10" @change="handleLogoUpload" />
               <div v-if="!logo" class="text-center p-4">
-                <UIcon name="i-lucide-image-plus" class="w-8 h-8 mx-auto text-gray-400 mb-2" aria-hidden="true" />
+                <UIcon name="i-lucide-image-plus" class="w-8 h-8 mx-auto text-gray-400 mb-2" />
                 <p class="text-xs font-bold text-gray-600">Click to upload logo</p>
               </div>
-              <img v-else :src="logo" class="object-contain w-full h-full" alt="Logo de la empresa cargado" />
+              <img v-else :src="logo" class="object-contain w-full h-full" />
             </div>
           </div>
 
           <div class="flex justify-between items-start mb-12">
             <div class="flex-1 space-y-1">
-              <UInput v-model="invoice.client.sectionTitle" variant="none" class="font-bold text-black text-sm mb-2 uppercase tracking-widest p-0 focus:ring-0 w-full" aria-label="Título de sección de cliente" />
+              <UInput v-model="invoice.client.sectionTitle" variant="none" class="font-bold text-black text-sm mb-2 uppercase tracking-widest p-0 focus:ring-0 w-full" />
               <div class="max-w-xs space-y-1">
                 <div class="flex gap-2">
-                  <UInput v-model="invoice.client.firstName" placeholder="First Name" variant="none" class="p-0 focus:ring-0" aria-label="Nombre del cliente" />
-                  <UInput v-model="invoice.client.lastName" placeholder="Last Name" variant="none" class="p-0 focus:ring-0" aria-label="Apellido del cliente" />
+                  <UInput v-model="invoice.client.firstName" placeholder="First Name" variant="none" class="p-0 focus:ring-0" />
+                  <UInput v-model="invoice.client.lastName" placeholder="Last Name" variant="none" class="p-0 focus:ring-0" />
                 </div>
-                <UInput v-model="invoice.client.address" placeholder="Client's Address" variant="none" class="p-0 focus:ring-0" aria-label="Dirección del cliente" />
-                <UInput v-model="invoice.client.cityStateZip" placeholder="City, State ZIP" variant="none" class="p-0 focus:ring-0" aria-label="Ciudad y CP del cliente" />
-                <UInput v-model="invoice.client.country" placeholder="Country" variant="none" class="p-0 focus:ring-0" aria-label="País del cliente" />
-                <UInput v-model="invoice.client.email" type="email" placeholder="Client's Email" variant="none" class="p-0 focus:ring-0" aria-label="Email del cliente" />
+                <UInput v-model="invoice.client.address" placeholder="Client's Address" variant="none" class="p-0 focus:ring-0" />
+                <UInput v-model="invoice.client.cityStateZip" placeholder="City, State ZIP" variant="none" class="p-0 focus:ring-0" />
+                <UInput v-model="invoice.client.email" type="email" placeholder="Client's Email" variant="none" class="p-0 focus:ring-0" />
               </div>
             </div>
 
             <div class="w-64 space-y-3 text-right">
               <div class="flex items-center justify-end gap-4">
-                <label :for="'inv-num'" class="text-sm text-gray-500">Invoice No:</label>
-                <UInput :id="'inv-num'" v-model="invoice.number" placeholder="####" variant="none" class="w-24 text-right font-mono focus:ring-0" />
+                <label class="text-sm text-gray-500">Invoice No:</label>
+                <UInput v-model="invoice.number" variant="none" class="w-24 text-right font-mono focus:ring-0" />
               </div>
               <div class="flex items-center justify-end gap-4">
-                <label :for="'inv-date'" class="text-sm text-gray-500">Invoice Date:</label>
-                <UInput :id="'inv-date'" v-model="invoice.date" type="date" variant="none" class="w-32 text-right focus:ring-0" />
-              </div>
-              <div class="flex items-center justify-end gap-4">
-                <label :for="'due-date'" class="text-sm text-gray-500">Due Date:</label>
-                <UInput :id="'due-date'" v-model="invoice.dueDate" type="date" variant="none" class="w-32 text-right focus:ring-0" />
+                <label class="text-sm text-gray-500">Invoice Date:</label>
+                <UInput v-model="invoice.date" type="date" variant="none" class="w-32 text-right focus:ring-0" />
               </div>
             </div>
           </div>
@@ -150,35 +125,39 @@
               <div class="col-span-1">ID</div>
               <div class="col-span-5">Description</div>
               <div class="col-span-2 text-center">Type</div>
-              <div class="col-span-2 text-center">Quantity</div>
+              <div class="col-span-2 text-center">Qty</div>
               <div class="col-span-2 text-right">Price</div>
             </div>
             
             <div v-for="(item, index) in invoice.items" :key="index" class="grid grid-cols-12 border-b border-gray-100 p-4 items-center group relative hover:bg-gray-50 transition-colors">
-              <div class="col-span-1 text-gray-300 font-mono text-sm" aria-hidden="true">{{ (index + 1).toString().padStart(2, '0') }}</div>
+              <div class="col-span-1 text-gray-300 font-mono text-sm">{{ (index + 1).toString().padStart(2, '0') }}</div>
               <div class="col-span-5 pr-4">
-                <UInput v-model="item.description" placeholder="Item description" variant="none" class="focus:ring-0" :aria-label="'Descripción del item ' + (index + 1)" />
+                <UInput v-model="item.description" placeholder="Item description" variant="none" class="focus:ring-0" />
               </div>
               
               <div class="col-span-2 px-2">
                 <select 
+                  v-if="index === 0"
                   v-model="item.type" 
-                  class="w-full bg-gray-50 border rounded p-1 text-xs outline-none focus:ring-1 focus:ring-primary-500 cursor-pointer" 
-                  :aria-label="'Tipo de item ' + (index + 1)"
+                  class="w-full bg-white border border-gray-200 rounded p-1 text-xs font-bold outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
+                  @change="syncAllTypes"
                 >
                   <option value="Producto">Product</option>
                   <option value="Servicio">Servicio</option>
                 </select>
+                <div v-else class="text-[10px] uppercase font-bold text-gray-400 text-center bg-gray-50 py-1.5 rounded border border-transparent">
+                  {{ invoice.items[0].type }}
+                </div>
               </div>
 
               <div class="col-span-2 text-center">
-                <UInput v-model.number="item.quantity" type="number" min="1" variant="none" class="text-center font-bold focus:ring-0" :aria-label="'Cantidad item ' + (index + 1)" />
+                <UInput v-model.number="item.quantity" type="number" min="1" variant="none" class="text-center font-bold focus:ring-0" />
               </div>
               <div class="col-span-2 text-right">
-                <UInput v-model.number="item.price" type="number" min="0" step="0.01" variant="none" class="text-right focus:ring-0" prefix="$" :aria-label="'Precio item ' + (index + 1)" />
+                <UInput v-model.number="item.price" type="number" min="0" step="0.01" variant="none" class="text-right focus:ring-0" prefix="$" />
               </div>
               
-              <UButton v-if="invoice.items.length > 1" icon="i-lucide-trash" color="red" variant="ghost" size="xs" class="absolute -right-10 opacity-0 group-hover:opacity-100 transition-opacity" :aria-label="'Eliminar fila ' + (index + 1)" @click="invoice.items.splice(index, 1)" />
+              <UButton v-if="invoice.items.length > 1" icon="i-lucide-trash" color="red" variant="ghost" size="xs" class="absolute -right-10 opacity-0 group-hover:opacity-100 transition-opacity" @click="removeItem(index)" />
             </div>
             
             <UButton icon="i-lucide-plus" variant="ghost" :style="{ color: themeColor }" class="mt-4 font-bold" @click="addItem">Add another line item</UButton>
@@ -186,8 +165,8 @@
 
           <div class="grid grid-cols-2 gap-20 items-end">
             <div class="border border-gray-200 rounded-sm p-6 min-h-[160px] relative">
-              <label :for="'invoice-notes'" class="absolute -top-3 left-4 bg-white px-2 text-xs font-bold text-gray-400 uppercase tracking-tighter">Notes:</label>
-              <UTextarea :id="'invoice-notes'" v-model="invoice.notes" placeholder="Any additional comments" variant="none" :rows="4" class="focus:ring-0" />
+              <label class="absolute -top-3 left-4 bg-white px-2 text-xs font-bold text-gray-400 uppercase tracking-tighter">Notes:</label>
+              <UTextarea v-model="invoice.notes" placeholder="Any additional comments" variant="none" :rows="4" class="focus:ring-0" />
             </div>
 
             <div class="space-y-4">
@@ -197,25 +176,19 @@
               </div>
               
               <div class="flex justify-between items-center text-gray-600 border-b border-gray-100 pb-4">
-                <label :for="'tax-input'">Tax:</label>
-                <div class="flex items-center gap-2">
-                  <UInput :id="'tax-input'" v-model.number="invoice.taxPercent" type="number" min="0" size="xs" class="w-20 text-right focus:ring-0 font-bold" variant="none" />
-                  <span class="font-bold">%</span>
-                </div>
+                <span>Tax (%):</span>
+                <UInput v-model.number="invoice.taxPercent" type="number" min="0" size="xs" class="w-20 text-right font-bold" variant="none" />
               </div>
 
               <div class="flex justify-between items-center text-gray-600 border-b border-gray-100 pb-4">
-                <label :for="'discount-input'">Discount:</label>
-                <div class="flex items-center gap-2">
-                  <UInput :id="'discount-input'" v-model.number="invoice.discountPercent" type="number" min="0" size="xs" class="w-20 text-right focus:ring-0 font-bold" variant="none" />
-                  <span class="font-bold">%</span>
-                </div>
+                <span>Discount (%):</span>
+                <UInput v-model.number="invoice.discountPercent" type="number" min="0" size="xs" class="w-20 text-right font-bold" variant="none" />
               </div>
 
               <div class="flex justify-between text-2xl font-bold pt-2 border-t-2 border-gray-900">
                 <div class="flex flex-col">
                   <span>Total:</span>
-                  <span class="text-[10px] text-gray-400 uppercase font-sans tracking-widest">Modo: {{ invoice.items[0]?.type }}</span>
+                  <span class="text-[10px] text-gray-400 uppercase tracking-widest">Modo: {{ invoice.items[0]?.type }}</span>
                 </div>
                 <span :style="{ color: themeColor }" class="font-serif transition-colors duration-500">${{ total.toFixed(2) }}</span>
               </div>
@@ -234,7 +207,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed } from 'vue'
 
 const showMenu = ref(false)
 const themeColor = ref('#1F1F1F')
@@ -257,21 +230,49 @@ const invoice = reactive({
   notes: ''
 })
 
-// VALIDACIÓN DE TIPO DE ITEM EN TIEMPO REAL
-// Este watch observa cualquier cambio en el array de items
-watch(() => invoice.items, (newItems) => {
-  if (newItems.length > 0) {
-    const masterType = newItems[0].type
-    // Si algún item tiene un tipo diferente al primero, lo corregimos
-    newItems.forEach((item, index) => {
-      if (index > 0 && item.type !== masterType) {
-        item.type = masterType
-      }
-    })
-  }
-}, { deep: true })
+// SINCRONIZACIÓN DE TIPOS
+// Esta función asegura que todos los ítems en el array tengan el mismo tipo que el primero
+const syncAllTypes = () => {
+  const masterType = invoice.items[0].type
+  invoice.items.forEach(item => {
+    item.type = masterType
+  })
+}
 
-// VALIDACIONES DE ENTRADA
+const addItem = () => {
+  // Heredamos el tipo actual del primer ítem para el nuevo
+  const currentMasterType = invoice.items[0]?.type || 'Producto'
+  invoice.items.push({ 
+    description: '', 
+    quantity: 1, 
+    price: 0, 
+    type: currentMasterType 
+  })
+}
+
+const removeItem = (index) => {
+  invoice.items.splice(index, 1)
+  // Al eliminar, nos aseguramos de que los que quedan sigan sincronizados
+  if (invoice.items.length > 0) syncAllTypes()
+}
+
+// CÁLCULOS
+const subtotal = computed(() => {
+  return invoice.items.reduce((acc, i) => acc + (i.quantity * i.price), 0)
+})
+
+const total = computed(() => {
+  const S = subtotal.value
+  const T = invoice.taxPercent / 100
+  const D = invoice.discountPercent / 100
+  
+  // Lógica de cálculo según tipo de factura (Servicio vs Producto)
+  return invoice.items[0]?.type === 'Servicio' 
+    ? (S - (S * D)) * (1 + T) 
+    : (S * (1 + T)) - (S * D)
+})
+
+// VALIDACIONES Y UTILIDADES
 const onlyNumbers = (e) => {
   const isControlKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Enter'].includes(e.key);
   if (!/^[0-9]$/.test(e.key) && !isControlKey) e.preventDefault();
@@ -285,7 +286,6 @@ const handlePasteNumbers = (e) => {
   }
 }
 
-// LOGO
 const handleLogoUpload = (e) => {
   const file = e.target.files[0]
   if (file) {
@@ -294,34 +294,6 @@ const handleLogoUpload = (e) => {
     reader.readAsDataURL(file)
   }
 }
-
-// LÓGICA DE TABLA
-const addItem = () => {
-  // Al agregar, heredamos automáticamente el tipo del primer item
-  const currentType = invoice.items.length > 0 ? invoice.items[0].type : 'Producto'
-  invoice.items.push({ 
-    description: '', 
-    quantity: 1, 
-    price: 0, 
-    type: currentType 
-  })
-}
-
-// CÁLCULOS
-const subtotal = computed(() => {
-  return invoice.items.reduce((acc, i) => acc + (i.quantity * i.price), 0)
-})
-
-const total = computed(() => {
-  const S = subtotal.value
-  const T = invoice.taxPercent / 100
-  const D = invoice.discountPercent / 100
-  
-  // Lógica de cálculo según tipo de factura
-  return invoice.items[0]?.type === 'Servicio' 
-    ? (S - (S * D)) * (1 + T) 
-    : (S * (1 + T)) - (S * D)
-})
 
 const resetInvoice = () => {
   if(confirm('¿Limpiar factura?')) {
@@ -351,9 +323,5 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
-/* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
-}
+input[type=number] { -moz-appearance: textfield; }
 </style>
