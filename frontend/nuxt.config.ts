@@ -22,6 +22,8 @@ export default defineNuxtConfig({
       link: [
         // Enlace explícito al manifiesto para asegurar detección en Lighthouse
         { rel: 'manifest', href: '/manifest.webmanifest' }
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }
       ]
     }
   },
@@ -90,6 +92,14 @@ export default defineNuxtConfig({
   routeRules: {
     // Prerenderizado de la home para mejorar la velocidad inicial (Performance)
     '/': { prerender: true }
+  },
+  experimental: {
+    inlineSSRStyles: true, // Extrae el CSS necesario para el renderizado inicial e inlínalo
+    payloadExtraction: true
+  },
+
+  nitro: {
+    compressPublicAssets: true, // Esto activa Gzip/Brotli para tus assets, ¡adiós al error de compresión!
   },
 
   // 7. Herramientas de Desarrollo y Calidad
