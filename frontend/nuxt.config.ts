@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       // En Railway configuraremos NUXT_PUBLIC_API_BASE
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api'
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'https://pruebafullstack-production.up.railway.app/api/'
     }
   },
 
